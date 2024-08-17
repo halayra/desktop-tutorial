@@ -1,0 +1,535 @@
+<html xmlns="http://www.thymeleaf.org">
+
+<head>
+	<!-- jQuery and AngularJS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/query-string@7.0.0/index.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/qs@6.11.0/dist/qs.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+	
+
+	<link rel="stylesheet" href="/css/styleTrangChu.css">
+	<!-- <link rel="stylesheet" href="/css/postBai.css">
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
+	<!-- Solana và buffer -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/buffer/6.0.3/index.min.js"></script>
+
+	<script th:inline="javascript">
+		// Lấy username từ biến được thêm vào model
+		const username = /*[[${username}]]*/ '[[${username}]]';
+		const imageName = /*[[${hinhAnh}]]*/ '[[${hinhAnh}]]';
+		const hoten = /*[[${hovaten}]]*/'[[${hovaten}]]';
+	</script>
+
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+	<script src="/js/connect.js"></script>
+	<nav>
+		<div class="nav-left">
+			<img src="/images/logo.png" class="logo">
+			<ul>
+				<li>
+					<img src="/images/notification.png">
+				</li>
+				<li>
+					<img src="/images/inbox.png">
+				</li>
+				<li>
+					<img src="/images/video.png">
+				</li>
+			</ul>
+		</div>
+		<div class="nav-right">
+			<div class="search-box">
+				<img src="/images/search.png">
+				<input type="text" placeholder="Search">
+			</div>
+			<!-- <div class="nav-user-icon online" onclick="settingsMenuToggle();">
+					<img src="/asset/images/img1.jpg">
+				</div> -->
+
+			<div class="nav-user-icon online" onclick="settingsMenuToggle();">
+				<img style="height: 40px"
+					th:src="${session.loggedAccount != null} ? @{'/images/' + ${session.loggedAccount.hinhAnh}} : @{'/images/default-avatar.jpg'}"
+					alt="User Avatar">
+			</div>
+			<button class="custom-btn btn-2" id="wallet_button" onclick="toggleWalletConnection()">Connect
+				Wallet</button>
+			<span id="status_text"></span>
+
+		</div>
+
+		<div class="settings-menu">
+			<div id="dark-btn">
+				<span></span>
+			</div>
+			<div class="settings-menu-inner">
+				<div class="user-profile">
+					<!-- <img src="/images/profile-pic.png"> -->
+					<img alt=""
+						th:src="${session.loggedAccount != null} ? @{'/images/' + ${session.loggedAccount.hinhAnh}} : @{'images'}">
+					<div>
+						<!-- <p>John Nicholson</p> -->
+						<p th:text="${session.loggedAccount != null} ? ${session.loggedAccount.hovaten} : null"></p>
+						<a href="#">See Your Profile</a>
+					</div>
+				</div>
+				<hr>
+				<div class="user-profile">
+					<img src="/images/feedback.png">
+					<div>
+						<p>Give Feedback</p>
+						<a href="#">Help us to improve the new design</a>
+					</div>
+				</div>
+				<hr>
+
+
+				<div class="settings-links">
+					<img src="/images/setting.png" class="settings-icon">
+					<a href="#">Settings & Privacy</a>
+					<img src="/images/arrow.png" width="10px">
+				</div>
+				<div class="settings-links">
+					<img src="/images/help.png" class="settings-icon">
+					<a href="#">Help & Support</a>
+					<img src="/images/arrow.png" width="10px">
+				</div>
+				<div class="settings-links">
+					<img src="/images/display.png" class="settings-icon">
+					<a href="#">Display & Accessibility</a>
+					<img src="/images/arrow.png" width="10px">
+				</div>
+				<div class="settings-links">
+					<img src="/images/logout.png" class="settings-icon">
+					<a href="#">Logout</a>
+					<img src="/images/arrow.png" width="10px">
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="left-sidebar">
+			<div class="imp-links">
+				<a href="#">
+					<img src="/images/news.png">
+					Latest news
+				</a>
+				<a href="#">
+					<img src="/images/friends.png">
+					Friends
+				</a>
+				<a href="#">
+					<img src="/images/group.png">
+					Groups
+				</a>
+				<a href="#">
+					<img src="/images/marketplace.png">
+					Marketplace
+				</a>
+				<a href="#">
+					<img src="/images/watch.png">
+					Watch
+				</a>
+				<a href="#">
+					See More
+				</a>
+			</div>
+			<div class="shortcut-links">
+				<p>Your Shortcuts</p>
+				<a href="#">
+					<img src="/images/shortcut-1.png">
+					Web Developers
+				</a>
+				<a href="#">
+					<img src="/images/shortcut-2.png">
+					Web Design Course
+				</a>
+				<a href="#">
+					<img src="/images/shortcut-3.png">
+					Full Stact Development
+				</a>
+				<a href="#">
+					<img src="/images/shortcut-4.png">
+					Website Experts
+				</a>
+			</div>
+		</div>
+		<div class="main-content">
+			<!-- <div class="story-gallery">
+				<div class="story story1">
+					<img src="/images/upload.png">
+					<p>Post Story</p>
+				</div>
+				<div class="story story2">
+					<img src="/images/member-1.png">
+					<p>Alison</p>
+				</div>
+				<div class="story story3">
+					<img src="/images/member-2.png">
+					<p>Jackson</p>
+				</div>
+				<div class="story story4">
+					<img src="/images/member-3.png">
+					<p>Samona</p>
+				</div>
+				<div class="story story5">
+					<img src="/images/member-4.png">
+					<p>John</p>
+				</div>
+			</div> -->
+			<div class="write-post-container">
+				<div class="user-profile">
+					<!-- <img src="/images/profile-pic.png"> -->
+					<img th:src="@{'/images/' + ${session.loggedAccount.hinhAnh}}" alt="">
+					<div>
+						<p th:text="${session.loggedAccount.hovaten}"></p>
+						<small>
+							Public
+							<i class="fas fa fa-caret-down"></i>
+						</small>
+					</div>
+				</div>
+				<div class="post-input-container">
+					<!-- <textarea rows="3" placeholder="What's on your mind, John?"></textarea> -->
+					<!-- button -->
+					<button type="button" class="btn btn-primary postbai" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						Post bài
+					</button>  
+				
+					<!-- Modal -->
+					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content form_area">
+								<div class="modal-header">
+									<h1 class="title">ĐĂNG BÀI</h1>
+								</div>
+								<div class="modal-body">
+									<form >
+										<div class="form_group" style="display: inline;">
+											<img style="width:45px; border-radius: 50%; margin-right:10px;" 
+												 th:src="@{'/images/' + ${session.loggedAccount.hinhAnh}}" alt="">
+											<label class="sub_title" for="name" th:text="${session.loggedAccount.hovaten}"></label>
+										</div>
+										<div class="form_group">
+											<label class="sub_title" for="name">Tiêu đề</label>
+											<input ng-model="baiviet.tieuDe" placeholder="Enter your title" class="form_style" type="text">
+										</div>
+										<div class="form_group">
+											<label class="sub_title" for="name">Thời gian đăng</label>
+											<input ng-model="baiviet.ngayDang" placeholder="Enter your date" class="form_style" type="date">
+										</div>
+										<div class="form_group">
+										    <label class="sub_title" for="name">Hình ảnh</label>
+										    <input onchange="angular.element(this).scope().uploadFile(this.files)" placeholder="Upload your image" class="form_style" type="file">
+										</div>
+										<div class="form_group">
+											<label class="sub_title" for="email">Nội dung</label>
+											<textarea ng-model="baiviet.noiDung" name="" id="" class="form_style"></textarea>
+										</div>
+										<div class="modal-footer d-flex justify-content-between">
+											<button type="submit" class="btn btn-primary" ng-click="create()">POST</button>
+										</div>
+									</form>
+								</div>
+								<!-- <div class="modal-footer d-flex justify-content-between">
+									<button type="submit" class="btn btn-primary" ng-click="create()">POST</button>
+								</div> -->
+							</div>
+						</div>
+					</div> 
+
+					<!-- <div class="add-post-links">
+						<a href="#">
+							<img src="/images/live-video.png">
+							Live Video
+						</a>
+						<a href="#">
+							<img src="/images/photo.png">
+							Photo/Video
+						</a>
+						<a href="#">
+							<img src="/images/feeling.png">
+							Feeling/Activity
+						</a>
+					</div> -->
+				</div>
+			</div>
+
+			<div class="post-container" ng-repeat="post in list">
+				<div class="post-row">
+					<div class="user-profile">
+						<img style="width: 45px; height: 45px;" src="{{'/image/' + post.account.hinhAnh}}" alt="">
+						<div>
+							<p>{{post.account.hovaten}}</p>
+							<span>{{post.ngayDang | date:"dd/MM/yyyy"}}</span>
+						</div>
+					</div>
+					<a href="#">
+						<i class="fa fa-ellipsis-v"></i>
+					</a>
+				</div>
+
+				<p class="post-text">{{post.noiDung}} </p>
+				<img style="width: 100%"  src="/image/{{post.hinhAnh}}" class="post-img" alt="">
+
+				<div class="post-row">
+					<div class="activity-icons">
+						<div>
+							<img src="/images/like-blue.png">
+							120
+						</div>
+						<div>
+							<img src="/images/comments.png">
+							19
+						</div>
+						<div>
+							<img src="/images/share.png">
+							120
+						</div>
+					</div>
+					<div class="post-profile-icon">
+						<img src="/images/profile-pic.png">
+						<i class="fas fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+
+			<div class="post-container">
+				<div class="post-row">
+					<div class="user-profile">
+						<img src="/images/member-2.png">
+						<div>
+							<p>Jackson Aston</p>
+							<span>June 21 2021, 3:40</span>
+						</div>
+					</div>
+					<a href="#">
+						<i class="fa fa-ellipsis-v"></i>
+					</a>
+				</div>
+
+				<p class="post-text">Like and Share this video with your friends
+					<a href="#">#letstrythis</a>
+					<a href="#">#youtube</a>
+				</p>
+				<img src="/images/feed-image-2.png" class="post-img">
+				<div class="post-row">
+					<div class="activity-icons">
+						<div>
+							<img src="/images/like.png">
+							120
+						</div>
+						<div>
+							<img src="/images/comments.png">
+							19
+						</div>
+						<div>
+							<img src="/images/share.png">
+							120
+						</div>
+					</div>
+					<div class="post-profile-icon">
+						<img src="/images/profile-pic.png">
+						<i class="fas fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+			<div class="post-container">
+				<div class="post-row">
+					<div class="user-profile">
+						<img src="/images/profile-pic.png">
+						<div>
+							<p>John Nicholson</p>
+							<span>June 21 2021, 13:40</span>
+						</div>
+					</div>
+					<a href="#">
+						<i class="fa fa-ellipsis-v"></i>
+					</a>
+				</div>
+
+				<p class="post-text">Subscribe <span>@LetsTryThis</span> YouTube Channel to watch more videos on website
+					development and UI Designs.
+					<a href="#">#letstrythis</a>
+					<a href="#">#youtube</a>
+				</p>
+				<img src="/images/feed-image-3.png" class="post-img">
+				<div class="post-row">
+					<div class="activity-icons">
+						<div>
+							<img src="/images/like.png">
+							120
+						</div>
+						<div>
+							<img src="/images/comments.png">
+							19
+						</div>
+						<div>
+							<img src="/images/share.png">
+							120
+						</div>
+					</div>
+					<div class="post-profile-icon">
+						<img src="/images/profile-pic.png">
+						<i class="fas fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+			<div class="post-container">
+				<div class="post-row">
+					<div class="user-profile">
+						<img src="/images/profile-pic.png">
+						<div>
+							<p>John Nicholson</p>
+							<span>June 21 2021, 13:40</span>
+						</div>
+					</div>
+					<a href="#">
+						<i class="fa fa-ellipsis-v"></i>
+					</a>
+				</div>
+
+				<p class="post-text"></p>
+				<img src="/images/feed-image-4.png" class="post-img">
+				<div class="post-row">
+					<div class="activity-icons">
+						<div>
+							<img src="/images/like.png">
+							120
+						</div>
+						<div>
+							<img src="/images/comments.png">
+							19
+						</div>
+						<div>
+							<img src="/images/share.png">
+							120
+						</div>
+					</div>
+					<div class="post-profile-icon">
+						<img src="/images/profile-pic.png">
+						<i class="fas fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+			<div class="post-container">
+				<div class="post-row">
+					<div class="user-profile">
+						<img src="/images/profile-pic.png">
+						<div>
+							<p>John Nicholson</p>
+							<span>June 21 2021, 13:40</span>
+						</div>
+					</div>
+					<a href="#">
+						<i class="fa fa-ellipsis-v"></i>
+					</a>
+				</div>
+
+				<p class="post-text">Meeting going on</p>
+				<img src="/images/feed-image-5.png" class="post-img">
+				<div class="post-row">
+					<div class="activity-icons">
+						<div>
+							<img src="/images/like.png">
+							120
+						</div>
+						<div>
+							<img src="/images/comments.png">
+							19
+						</div>
+						<div>
+							<img src="/images/share.png">
+							120
+						</div>
+					</div>
+					<div class="post-profile-icon">
+						<img src="/images/profile-pic.png">
+						<i class="fas fa fa-caret-down"></i>
+					</div>
+				</div>
+			</div>
+			<button type="button" class="load-more-btn">Load More</button>
+		</div>
+		<div class="right-sidebar">
+			<div class="sidebar-title">
+				<h4>Events</h4>
+				<a href="#">See All</a>
+			</div>
+			<div class="event">
+				<div class="left-event">
+					<h3>18</h3>
+					<span>March</span>
+				</div>
+				<div class="right-event">
+					<h4>Social Media</h4>
+					<p>
+						<i class="fa fa-map-marker"></i>
+						Willson Tech Park
+					</p>
+					<a href="#">More Info</a>
+				</div>
+			</div>
+			<div class="event">
+				<div class="left-event">
+					<h3>22</h3>
+					<span>June</span>
+				</div>
+				<div class="right-event">
+					<h4>Mobile Marketing</h4>
+					<p>
+						<i class="fa fa-map-marker"></i>
+						Willson Tech Park
+					</p>
+					<a href="#">More Info</a>
+				</div>
+			</div>
+
+			<div class="sidebar-title">
+				<h4>Advertisement</h4>
+				<a href="#">Close</a>
+			</div>
+			<img src="/images/advertisement.png" class="sidebar-ads">
+
+			<div class="sidebar-title">
+				<h4>Conversation</h4>
+				<a href="#">Hide Chat</a>
+			</div>
+			<div class="online-list">
+				<div class="online">
+					<img src="/images/member-1.png">
+				</div>
+				<p>Alison Mina</p>
+			</div>
+			<div class="online-list">
+				<div class="online">
+					<img src="/images/member-2.png">
+				</div>
+				<p>Jackson Aston</p>
+			</div>
+			<div class="online-list">
+				<div class="online">
+					<img src="/images/member-3.png">
+				</div>
+				<p>Samona Rose</p>
+			</div>
+		</div>
+	</div>
+	<div class="footer">
+		<p>Copyright 2021 - Lets Try This YouTube Channel</p>
+	</div>
+	<script src="/js/postBai.js"></script>
+	<script src="/js/scriptTrangChu.js"></script>
+</body>
+
+</html>

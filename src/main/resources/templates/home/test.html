@@ -1,0 +1,38 @@
+<html xmlns="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@">
+</head>
+
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas width="640" height="480"></canvas>
+
+    <div style="margin-top: 10px;">
+        <button style="margin-right: 10px;" id="btn">Take photo</button>
+        <a href="#" id="download" download="webcam.png" hidden></a>
+    </div>
+
+    <script>
+        const btn = document.getElementById('btn');
+        const download = document.getElementById('download');
+        const video = document.getElementById('video');
+        const canvas = document.querySelector('canvas');
+
+        async function init() {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: true });
+            video.srcObject = stream;
+        }
+        init();
+
+        btn.addEventListener('click', async () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            download.href = canvas.toDataURL();
+            download.click();
+            download.hidden = false;
+        });
+    </script>
+</body>
