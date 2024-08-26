@@ -36,4 +36,5 @@ public class WalletService {
         wallet.setAccount(account);
         return walletRepository.save(wallet);
     }
+    
 }

@@ -27,7 +27,7 @@ public class HomeController {
 
 	@GetMapping("/test")
 	public String getMethodName() {
-		return "test";
+		return "home/test3";
 	}
 
 	@GetMapping("/dangbai/test")

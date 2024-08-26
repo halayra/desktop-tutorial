@@ -47,6 +47,15 @@ public class DangNhapController {
 	            return "home/login";
 	        });
 	}
+	
+	@GetMapping("/logout")
+	public String logout() {
+	    // Xóa thông tin tài khoản khỏi session
+	    session.invalidate();
+	    
+	    // Chuyển hướng đến trang đăng nhập sau khi đăng xuất
+	    return "redirect:/login";
+	}
 
 //	@PostMapping("/login/save")
 //  public String save(@ModelAttribute("account") Account account, Model model) {
